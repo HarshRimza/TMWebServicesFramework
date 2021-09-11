@@ -92,7 +92,7 @@ session.setAttribute("message","Everything is fine");
 @Path("/file")
 public String getFile(File files[])
 {
-File where=new File("c:\\tomcat9\\webapps\\ajax-examples\\uploadedFiles\\");
+File where=new File("your_path");
 for(File file:files)
 {
 try
