@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Expreiment</title>
+<script>
+function $$$(elemId)
+{
+var elem=document.getElementById(elemId);
+if(!elem) throw "Invalid id : "+elemId;
+return new $$$$$(elem);
+}
+function $$$$$(elem)
+{
+var element=elem;
+this.val=function(){
+if(element.value) return element.value;
+else throw "component doesn't have value property";
+}
+this.html=function(content){
+element.innerHTML=content;
+}
+}
+
+function Student()
+{
+this.rollNumber=0;
+this.name=0;
+this.age=0;
+}
+
+
+$$$.postJSON=function(jsonObject){
+if(!jsonObject.url) throw "url property missing in json/url is boolean";
+if(typeof jsonObject.url!="string") throw "url property should be of string type";
+if(jsonObject.success && typeof jsonObject.success!="function") throw "success property should represent a function";
+if(jsonObject.failed && typeof jsonObject.failed!="function") throw "failed property should represent a function";
+if(!jsonObject.data) throw "data is not present";
+var xmlHttpRequest=new XMLHttpRequest();
+xmlHttpRequest.onreadystatechange=function(){
+if(this.readyState==4)
+{
+if(this.status==200)
+{
+var responseString=xmlHttpRequest.responseText;
+console.log(responseString);
+var responseJSON=JSON.parse(responseString);
+if(jsonObject.success) jsonObject.success(responseJSON);
+}
+else
+{
+if(jsonObject.failed)jsonObject.failed();
+}
+}
+}
+xmlHttpRequest.open("POST",jsonObject.url,true);
+xmlHttpRequest.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlHttpRequest.send(JSON.stringify(jsonObject.data));
+}
+
+
+
+function processData()
+{
+var student=new Student();
+student.rollNumber=document.getElementById("rr").value;
+student.name=document.getElementById('nn').value;
+student.age=document.getElementById('age').value;
+console.log(student.rollNumber,student.name,student.age);
+$$$.postJSON({
+"url":'/fup/service/student/forwardRequest',
+'data':student,
+'success':function(response){console.log(response);},
+'failed':function(){alert("Unable to Send request, try again after some time.");}
+});
+}
+</script>
+</head>
+<body>
+
+<form action='service/student/kite' method='post'>
+<button type='submit'>Student Kite</button>
+</form>
+
+<form action='/fup/service/student/whatever' method="post" >
+Roll Number : <input type='number' id='rr' name='rr'><br><br>
+Name : <input type='text' id='nn' name='nn'><br><br>
+Age : <input type='number' id='age' name='age'><br><br>
+<button type='button' onclick=processData()>Register</button>
+<button type='submit'>Forward</button>
+</form>
+<br>
+<br>
+<form action='/fup/service/student/file' method='post' enctype='multipart/form-data'>
+File : <input type='file' id='file' name='file'><br><br>
+Another File : <input type='file' id='fn' name='fn'><br><br>
+<button type='submit'>Send File</button>
+</form>
+</body>
+</html>
