@@ -13,7 +13,7 @@ A J2EE Web Services Framework for easy and fast development of web-applications.
 |@RequestData|For providing data to the mapped methods |
 |@ResponseType|For sending response json / text data back  |
 |@Secured|For handling the login / logout module |
-|Special Objects|For providing objects like HttpRequestServlet, HttpResponseServlet, ServletContext, HttpSession to mapped methods |
+|Special Objects|For providing objects like HttpServletRequest, HttpServletResponse, ServletContext, HttpSession to mapped methods |
   
 </div>
 
@@ -151,23 +151,22 @@ So, Whenever the request will arrive for `/student/forwardToMethod` after proces
 
 For Example : The URL is `http://localhost:8080/your-project-name/service/student/login` here `service` is the framework servlet and `student`, `login` are used for mapping method.
 ```java
-
 @Path("/student")
 class Student
 {
-
 @Secured(Login.class)
 @Path("/login")
 public void login()
 {
 System.out.println("Login method got called");
 }
-
 }
 ```
-So, you can send String or JSON String as a response. Whenever request come for `/student/getdata` plain string will get send and when request come for `/student/getJSONData` the complex data will get converted to JSON String and then it will get send to client.
-
-
+Now, the value of @Secured annotation is of Class Type, so you have to create a class which will inherit AuthenticationInterface and override two methods
+1. areValidCredentials() with return type boolean and parameters of classes HttpSession, HttpServletRequest and ServletContext
+        `boolean areValidCredentials(HttpSession session,HttpServletRequest request,ServletContext servletContext)`
+2. otherwise  with return type void and parameters of classes HttpServletRequest and HttpServletResponse
+        `void otherwise(HttpServletRequest request,HttpServletResponse response)`
 
 
 
