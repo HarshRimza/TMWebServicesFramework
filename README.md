@@ -1,18 +1,18 @@
 # <div align='center'> TMWebServicesFramework </div>
-A J2EE Web Services Framework for easy and fast development of web-applications. This framework can handle request forwarding, login-logout part, raw data processing, URL mapping with user defined class methods and file uploading system. The user has no need to understand the java servlet concept.
+A J2EE Web Services Framework for easy and fast development of web-applications using Java Reflection API and Java Annotation. This framework can handle request forwarding, login-logout part, raw data processing, URL mapping with user defined class methods and file uploading system. The user has no need to understand the java servlet concept.
 
-#### We have created different types of annotations for different kinds of works.
+#### We have created different types of annotations for different kinds of works. These annotations reside in the package 'com.thinking.machines.annotations'
 
 <div align='center'>
 
-|Annotation|Description|
-|--------|------|
-|@FilesAnnotation|For handling the File Uploading Part of web application |
-|@Forward|For forwarding request to different classes / jsp |
-|@Path|For mapping class's methods to url |
-|@RequestData|For providing data to the mapped methods |
-|@ResponseType|For sending response json / text data back  |
-|@Secured|For handling the login / logout module |
+|Annotation|Description|Value Type|
+|--------|------|----|
+|@FilesAnnotation|For handling the File Uploading Part of web application |No Type|
+|@Forward|For forwarding request to different classes / jsp |String Type|
+|@Path|For mapping class's methods to url |String Type|
+|@RequestData|For providing data to the mapped methods |String Type|
+|@ResponseType|For sending response json / text data back  |String Type|
+|@Secured|For handling the login / logout module |Class Type|
 |Special Objects|For providing objects like HttpServletRequest, HttpServletResponse, ServletContext, HttpSession to mapped methods |
   
 </div>
@@ -162,13 +162,67 @@ System.out.println("Login method got called");
 }
 }
 ```
-Now, the value of @Secured annotation is of Class Type, so you have to create a class which will inherit AuthenticationInterface and override two methods
+Now, the value of @Secured annotation is of Class Type, so you have to create a class which will implement AuthenticationInterface and override two methods of the interface
 1. areValidCredentials() with return type boolean and parameters of classes HttpSession, HttpServletRequest and ServletContext
         `boolean areValidCredentials(HttpSession session,HttpServletRequest request,ServletContext servletContext)`
 2. otherwise  with return type void and parameters of classes HttpServletRequest and HttpServletResponse
         `void otherwise(HttpServletRequest request,HttpServletResponse response)`
 
+On the decision of 'areValidCredentials()' method it will get decided wheather to process the login method or not.
+1. If the method returns true the login method will get called.
+2. If the method returns false the otherwise method will get called and the login method will not get executed.
 
+```java
+import com.thinking.machines.interfaces.*;  // for AuthenticationInterface
+public class Login implements AuthenticationInterface
+{
+public boolean areValidCredentials(HttpSession session,HttpServletRequest request,ServletContext servletContext)
+{
+// calculation wheather credentials are right or wrong
+//return true/false;
+}
+public void otherwise(HttpServletRequest request,HttpServletResponse response)
+{
+// whatever you want to do forward request to other file or send response back to client
+}
+}
+```
+So, whenever the request will arrive for `/student/login` the 'areValidCredentials()' method will get called of that class whose type is assigned to @Secured annotation and if the 'areValidCredentials()' method returns false then otherwise method will get called, if the 'areValidCredentials()' method returns true then the method mapped with `/student/login` URL will get processed.
+
+#### How to apply @FilesAnnotation annotation
+@FilesAnnotation Annotation needs to be applied on method if the method is supposed to be used for getting uploaded file / accept array of files. To use this feature you need to create a folder named as 'filestore' in 'WEB-INF' folder of your project. 
+
+For Example : The URL is `http://localhost:8080/your-project-name/service/student/uploadFiles` here `service` is the framework servlet and `student`, `uploadFiles` are used for mapping method.
+```java
+@Path("/student")
+class Student
+{
+@FilesAnnotation
+@Path("/uploadFiles")
+public void uploadFiles(File files[])
+{
+// piece of code to copy the files from filestore folder to your desired location.
+}
+}
+```
+So, Whenever the request will arrive for `/student/uploadFiles` the mapped method will get called and the array of uploaded files will be provided to the mapped method.
+
+Note : For uploading file it is necessary to provide File[] array to the mapped method parameters
+
+#### Special Objects
+All The mapped methods have access to Special Objects i.e. HttpServletRequest, HttpServletResponse, HttpSession, and ServletContext. To use them there is no need of any annotation. 
+```java
+@Path("/student")
+class Student
+{
+@Path("/kite")
+public void doSomething(HttpServletRequest request,HttpServletResponse response,HttpSession session,ServletContext context)
+{
+System.out.println("doSomething got called");
+}
+}
+```
+So, you can get access to the special objects whenever you want them in your mapped methods.
 
 
 
