@@ -62,10 +62,53 @@ And So the html would be like this
   </body>
 </html>
 ```
+So, whenever the form get submitted the `setData()` method will get called and the value of 'rr' input field and value of 'nn' input field will be passed as arguments to setData() method.
 
+#### How to apply @ResponseType annotation
+@ResponseType Annotation needs to be applied on method if the method is supposed to send data from server to client. This annotation accepts only two value 
+1. Normal String
+2. JSON String
 
+For Example : The URL is `http://localhost:8080/your-project-name/service/student/getdata` here `service` is the framework servlet and `student`, `getdata` are used for mapping method and the second URL is `http://localhost:8080/your-project-name/service/student/getJSONData`.
+```java
 
+@Path("/student")
+class Student
+{
+public int rollNumber;
+public String name;
 
+public Student()
+{
+this.rollNumber=0;
+this.name="";
+}
+
+public Student(int rollNumber,String name)
+{
+this.rollNumber=rollNumber;
+this.name=name;
+}
+
+// for sending plain string
+@ResponseType("html/text")
+@Path("/getdata")
+public String getData()
+{
+return "Every thing is fine";
+}
+
+// for sending complex data in JSON string format
+@ResponseType("JSON")
+@Path("/getJSONData")
+public Student getJSONData()
+{
+return new Student(101,"Suresh");
+}
+
+}
+```
+So, you can send String or JSON String as a response. Whenever request come for `/student/getdata` plain string will get send and when request come for `/student/getJSONData` the complex data will get converted to JSON String and then it will get send to client.
 
 
 
