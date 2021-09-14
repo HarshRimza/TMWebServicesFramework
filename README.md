@@ -13,7 +13,8 @@ A J2EE Web Services Framework for easy and fast development of web-applications.
 |@RequestData|For providing data to the mapped methods |
 |@ResponseType|For sending response json / text data back  |
 |@Secured|For handling the login / logout module |
-
+|Special Objects|For providing objects like HttpRequestServlet, HttpResponseServlet, ServletContext, HttpSession to mapped methods |
+  
 </div>
 
 #### Let's start with How to apply @Path annotation
@@ -110,7 +111,61 @@ return new Student(101,"Suresh");
 ```
 So, you can send String or JSON String as a response. Whenever request come for `/student/getdata` plain string will get send and when request come for `/student/getJSONData` the complex data will get converted to JSON String and then it will get send to client.
 
+#### How to apply @Forward annotation
+@Forward Annotation needs to be applied on method if the method's return type is of void type and it is supposed to forward request to other mapped method or to any JSP file.
 
+For Example : The URL is `http://localhost:8080/your-project-name/service/student/forwardToMethod` here `service` is the framework servlet and `student`, `forwardToMethod` are used for mapping method and the second URL is `http://localhost:8080/your-project-name/service/student/forwardToJSP`.
+```java
+
+@Path("/student")
+class Student
+{
+
+@ResponseType("html/text")
+@Path("/whatever")
+public String whatever()
+{
+return "whatever method got called";
+}
+
+@Forward("/student/whatever")
+@Path("/forwardToMethod")
+public void forwardToMethod()
+{
+System.out.println("Forwarding request to /student/whatever");
+}
+
+@Forward("/whatever.jsp")
+@Path("/forwardToJSP")
+public void forwardToJSP()
+{
+System.out.println("Forwarding request to whatever.jsp");
+}
+
+}
+```
+So, Whenever the request will arrive for `/student/forwardToMethod` after processing of the mapped method the request will get forwarded to `/student/whatever` and as the response type of 'whatever()' method is 'html/text', so a string as response will get send to client. And whenever the request will arrive for `/student/forwardToJSP` after processing of the mapped method the request will get forwarded 'whatever.jsp' and this JSP file should be present in your-project-folder.
+
+#### How to apply @Secured annotation
+@Secured Annotation needs to be applied on method if the method is involved in login/logout handling.
+
+For Example : The URL is `http://localhost:8080/your-project-name/service/student/login` here `service` is the framework servlet and `student`, `login` are used for mapping method.
+```java
+
+@Path("/student")
+class Student
+{
+
+@Secured(Login.class)
+@Path("/login")
+public void login()
+{
+System.out.println("Login method got called");
+}
+
+}
+```
+So, you can send String or JSON String as a response. Whenever request come for `/student/getdata` plain string will get send and when request come for `/student/getJSONData` the complex data will get converted to JSON String and then it will get send to client.
 
 
 
