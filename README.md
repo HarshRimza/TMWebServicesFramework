@@ -245,4 +245,4 @@ System.out.println("doSomething got called");
 ```
 So, you can get access to the special objects whenever you want them in your mapped methods.
 
-> Note : Don't forget to include the 'your-project-name\WEB-INF\lib' folder to include in your classpath while compiling your '.java' file.
+> Note : Don't forget to include the 'your-project-name\WEB-INF\lib' folder in your classpath while compiling your '.java' file.
