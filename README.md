@@ -17,6 +17,27 @@ A J2EE Web Services Framework for easy and fast development of web-applications 
   
 </div>
 
+### How to use the framework
+First you need to download the 'tmswf.jar' from this repository and put it in the '\your-project\WEB-INF\lib' folder and then add some lines to 'web.xml' file in your project's 'WEB-INF' folder as below for our servlet mapping 
+```xml
+<servlet>
+<servlet-name>CollectClassesServlet</servlet-name>
+<servlet-class>com.thinking.machines.servlets.CollectClassesServlet</servlet-class>
+<load-on-startup>0</load-on-startup>
+</servlet>
+
+<servlet>
+<servlet-name>TMService</servlet-name>
+<servlet-class>com.thinking.machines.servlets.TMService</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>TMService</servlet-name>
+<url-pattern>/service/*</url-pattern>
+</servlet-mapping>
+```
+Now, you are good to go to use our web services framework.
+
+
 #### Let's start with How to apply @Path annotation
 @Path Annotation needs to be applied on classes and methods both only if you want to map methods of the class to the url.
 
@@ -223,13 +244,3 @@ System.out.println("doSomething got called");
 }
 ```
 So, you can get access to the special objects whenever you want them in your mapped methods.
-
-### How to use the framework
-
-
-
-
-
-
-
-
