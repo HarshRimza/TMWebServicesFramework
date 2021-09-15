@@ -228,7 +228,7 @@ public void uploadFiles(File files[])
 ```
 So, Whenever the request will arrive for `/student/uploadFiles` the mapped method will get called and the array of uploaded files will be provided to the mapped method.
 
-Note : For uploading file it is necessary to provide File[] array to the mapped method parameters
+> Note : For uploading file it is necessary to provide File[] array to the mapped method parameters
 
 #### Special Objects
 All The mapped methods have access to Special Objects i.e. HttpServletRequest, HttpServletResponse, HttpSession, and ServletContext. To use them there is no need of any annotation. 
